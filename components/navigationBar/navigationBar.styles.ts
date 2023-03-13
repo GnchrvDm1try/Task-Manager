@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     },
     bar: {
       height: 85,
-      paddingBottom: 32,
+      paddingBottom: Platform.OS === 'ios' ? 32 : 0,
       backgroundColor: colors.primaryColor,
       flexDirection: 'row',
       alignItems: 'center',

@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Platform } from "react-native";
 import { styles } from './navigationBar.styles';
 import TasksIcon from '../../assets/icons/tasks_icon.svg';
 import CalendarIcon from '../../assets/icons/calendar_icon.svg';
@@ -29,8 +29,8 @@ export default function NavigationBar(props: NavigationProps) {
                 {props.children}
             </ScrollView>
             <View style={styles.bar}>
-                <TasksIcon width={'50%'} height={'80%'} />
-                <CalendarIcon width={'50%'} height={'80%'} />
+                <TasksIcon width={'50%'} height={Platform.OS === 'ios' ? '80%' : '65%'} />
+                <CalendarIcon width={'50%'} height={Platform.OS === 'ios' ? '80%' : '65%'} />
             </View>
         </View>
     );
