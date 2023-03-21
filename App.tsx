@@ -1,14 +1,11 @@
 import { StyleSheet, View } from 'react-native';
-import NavigationBar from './components/navigationBar/navigationBar';
-import TaskItem from "./components/taskItem/taskItem";
+import BottomTabsNavigator from './navigators/bottomTabsNavigator';
 import colors from './styles/colors.json';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <NavigationBar>
-        <TaskItem/>
-      </NavigationBar>
+      <BottomTabsNavigator />
     </View>
   );
 }
