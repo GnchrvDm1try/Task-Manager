@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import colors from '../../styles/colors.json';
 
 export const styles = StyleSheet.create({
@@ -15,7 +15,8 @@ export const styles = StyleSheet.create({
   },
   taskDate: {
     backgroundColor: '#fff',
-    borderRadius: 100,
+    borderRadius: 10,
+    overflow: 'hidden',
     paddingHorizontal: 7,
     paddingVertical: 2
   }
