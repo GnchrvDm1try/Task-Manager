@@ -1,3 +1,5 @@
+import Stage from './Stage'
+
 export default class Task {
     id: number;
     title: string;
@@ -5,6 +7,7 @@ export default class Task {
     additionDate: Date;
     beginDate?: Date;
     deadlineDate?: Date;
+    stages: Stage[] | undefined;
 
     constructor(id: number, title: string, isDone: boolean, additionDate: Date, beginDate?: Date, deadlineDate?: Date) {
         this.id = id;
