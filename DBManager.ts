@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import Task from './models/Task';
 import Stage from './models/Stage';
 
 export class DBManager {
@@ -14,6 +15,28 @@ export class DBManager {
         if (!DBManager.instance)
             DBManager.instance = new DBManager();
         return DBManager.instance;
+    }
+
+    public getAllTasksWithStages(): Promise<Task[]> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `SELECT * FROM Tasks`,
+                    [],
+                    (_, { rows }) => {
+                        let tasks: Task[] = new Array<Task>();
+                        for (let i = 0; i < rows.length; i++) {
+                            let currentRow = rows.item(i)
+                            let task = new Task(currentRow.id, currentRow.title, currentRow.is_done, currentRow.addition_date, currentRow.begin_date, currentRow.deadline_date);
+                            tasks.push(task);
+                            this.getStages(currentRow.id).then((res) => task.stages = res);
+                        }
+                        resolve(tasks);
+                    },
+                    (_, error) => { reject(error); return false; }
+                );
+            });
+        });
     }
 
     public getStages(taskId: number): Promise<Stage[]> {
