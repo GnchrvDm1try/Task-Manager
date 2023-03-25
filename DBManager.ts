@@ -1,4 +1,6 @@
 import * as SQLite from 'expo-sqlite';
+import Stage from './models/Stage';
+
 export class DBManager {
     private static instance: DBManager;
     private static readonly db = SQLite.openDatabase('TaskManagerDB')
@@ -12,6 +14,26 @@ export class DBManager {
         if (!DBManager.instance)
             DBManager.instance = new DBManager();
         return DBManager.instance;
+    }
+
+    public getStages(taskId: number): Promise<Stage[]> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `SELECT * FROM Stages WHERE task_id = ?`,
+                    [taskId],
+                    (_, { rows }) => {
+                        let stages: Stage[] = new Array<Stage>();
+                        for (let i = 0; i < rows.length; i++) {
+                            let currentRow = rows.item(i)
+                            stages.push(new Stage(currentRow.task_id, currentRow.title, currentRow.is_done, currentRow.description, currentRow.deadline_date));
+                        }
+                        resolve(stages);
+                    },
+                    (_, error) => { reject(error); return false; }
+                );
+            });
+        });
     }
 
     private static createTasksTableIfNotExists() {
