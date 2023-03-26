@@ -7,7 +7,7 @@ export default class Task {
     additionDate: Date;
     beginDate?: Date;
     deadlineDate?: Date;
-    stages: Stage[] | undefined;
+    stages: Stage[] = new Array<Stage>();
 
     constructor(id: number, title: string, isDone: boolean, additionDate: Date, beginDate?: Date, deadlineDate?: Date) {
         this.id = id;
