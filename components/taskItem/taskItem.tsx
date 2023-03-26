@@ -15,7 +15,6 @@ type Props = {
 export default function TaskItem({ task }: Props) {
   const [stages, setStages] = useState(new Array<Stage>());
   const navigation1 = useNavigation();
-export default function TaskItem({ navigation }: Props) {
 
   useEffect(() => {
     DBManager.getInstance().getStages(task.id).then((res) => {
