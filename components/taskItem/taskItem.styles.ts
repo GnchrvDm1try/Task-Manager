@@ -6,18 +6,23 @@ export const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.borderColor,
     borderRadius: 10,
-    margin: 15,
+    marginVertical: 7.5,
     padding: 8
   },
-  taskTitle : {
+  title: {
     fontSize: 26,
     fontWeight: '500'
   },
-  taskDate: {
-    backgroundColor: '#fff',
+  date: {
+    backgroundColor: 'white',
     borderRadius: 10,
     overflow: 'hidden',
     paddingHorizontal: 7,
     paddingVertical: 2
+  },
+  otherInfo: {
+    color: colors.borderColor,
+    fontSize: 14,
+    fontWeight: '500'
   }
 });
