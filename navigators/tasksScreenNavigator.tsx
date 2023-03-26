@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TaskItem from '../components/taskItem/taskItem';
+import TaskList from '../components/taskList/taskList';
 import colors from '../styles/colors.json';
 
 export type TaskListStackParamList = {
@@ -19,7 +19,7 @@ export default function TasksScreen() {
                 }}>
                 <Stack.Screen
                     name='Task list'
-                    component={TaskItem}
+                    component={TaskList}
                     options={{ headerShown: false }} />
             </Stack.Group>
         </Stack.Navigator>
