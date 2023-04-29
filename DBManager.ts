@@ -4,7 +4,7 @@ import Stage from './models/Stage';
 
 export class DBManager {
     private static instance: DBManager;
-    private static readonly db = SQLite.openDatabase('TaskManagerDB')
+    private static readonly db = SQLite.openDatabase('TaskManagerDB');
 
     private constructor() {
         DBManager.createTasksTableIfNotExists();
@@ -16,7 +16,7 @@ export class DBManager {
             DBManager.instance = new DBManager();
         return DBManager.instance;
     }
-    
+
     public createTask(task: Task): Promise<SQLite.SQLResultSet> {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
@@ -39,8 +39,15 @@ export class DBManager {
                     (_, { rows }) => {
                         let tasks: Task[] = new Array<Task>();
                         for (let i = 0; i < rows.length; i++) {
-                            let currentRow = rows.item(i)
-                            let task = new Task(currentRow.id, currentRow.title, currentRow.is_done, currentRow.addition_date, currentRow.begin_date, currentRow.deadline_date);
+                            let currentRow = rows.item(i);
+                            let task = new Task({
+                                id: currentRow.id,
+                                title: currentRow.title,
+                                isDone: currentRow.is_done,
+                                additionDate: new Date(currentRow.addition_date),
+                                beginDate: currentRow.begin_date ? new Date(currentRow.begin_date) : undefined,
+                                deadlineDate: currentRow.deadline_date ? new Date(currentRow.deadline_date) : undefined
+                            });
                             tasks.push(task);
                         }
                         resolve(tasks);
@@ -102,7 +109,14 @@ export class DBManager {
                         let stages: Stage[] = new Array<Stage>();
                         for (let i = 0; i < rows.length; i++) {
                             let currentRow = rows.item(i)
-                            stages.push(new Stage(currentRow.task_id, currentRow.title, currentRow.is_done, currentRow.description, currentRow.deadline_date));
+                            stages.push(new Stage({
+                                id: currentRow.stage_id,
+                                taskId: currentRow.task_id,
+                                title: currentRow.title,
+                                isDone: currentRow.is_done,
+                                description: currentRow.description,
+                                deadlineDate: currentRow.stage_deadline_date ? new Date(currentRow.stage_deadline_date) : undefined
+                            }));
                         }
                         resolve(stages);
                     },
