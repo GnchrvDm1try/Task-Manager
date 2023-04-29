@@ -1,19 +1,30 @@
 import Task from './Task';
 
+// isDone accepts a boolean or number, where 0 is false, and any other number - true
+interface IStageProps {
+    title: string;
+    taskId: number;
+    id: number;
+    isDone?: boolean | number;
+    description?: string;
+    deadlineDate?: Date;
+}
+
 export default class Stage {
-    task: Task | undefined;
-    id: number | undefined;
+    id: number;
     taskId: number;
     title: string;
     isDone: boolean;
     description?: string;
     deadlineDate?: Date;
+    task: Task | undefined;
 
-    constructor(taskId: number, title: string, isDone: boolean, description: string, deadlineDate: Date) {
-        this.taskId = taskId;
-        this.title = title;
-        this.isDone = isDone;
-        this.description = description;
-        this.deadlineDate = deadlineDate;
+    constructor(props: IStageProps) {
+        this.id = props.id;
+        this.taskId = props.taskId;
+        this.title = props.title;
+        this.isDone = Boolean(props.isDone);
+        this.description = props.description;
+        this.deadlineDate = props.deadlineDate;
     }
 }
