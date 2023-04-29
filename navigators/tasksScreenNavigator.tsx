@@ -1,13 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TaskDetails from '../components/taskDetails/taskDetails';
 import TaskList from '../components/taskList/taskList';
-import Task from '../models/Task';
 import CreateTaskForm from '../components/createTaskForm/createTaskForm';
 import colors from '../styles/colors.json';
 
 export type TaskListStackParamList = {
     'Task list': undefined;
-    'Task info': { task: Task };
+    'Task info': { taskId: number };
     'Create task': undefined;
 };
 
@@ -27,8 +26,7 @@ export default function TasksScreen() {
                     options={{ headerShown: false }} />
                 <Stack.Screen
                     name='Task info'
-                    component={TaskDetails}
-                    options={({ route }) => ({ title: route.params.task.title })} />
+                    component={TaskDetails} />
                 <Stack.Screen
                     name='Create task'
                     component={CreateTaskForm} />
