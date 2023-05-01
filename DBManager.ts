@@ -17,13 +17,13 @@ export class DBManager {
         return DBManager.instance;
     }
 
-    public createTask(task: Task): Promise<SQLite.SQLResultSet> {
+    public createTask(task: Task): Promise<number> {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
                 tx.executeSql(
                     `INSERT INTO Tasks (title, begin_date, deadline_date) VALUES (?, ?, ?);`,
                     [task.title, task.beginDate?.toString() ?? null, task.deadlineDate?.toString() ?? null],
-                    (tx, result) => { resolve(result); },
+                    (_, result) => { resolve(result.insertId!); },
                     (_, error) => { reject(error); return false; }
                 );
             });

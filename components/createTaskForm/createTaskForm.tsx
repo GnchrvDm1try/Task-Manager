@@ -142,7 +142,7 @@ export default function CreateTaskForm({ navigation, route }: Props) {
                                     index: routes.length - 1
                                 });
                             });
-                            navigation.navigate('Task info', { taskId: res.insertId! })
+                            navigation.navigate('Task info', { taskId: res });
                         });
                     }}>
                     <Text style={baseStyles.buttonTextContent}>Create</Text>
