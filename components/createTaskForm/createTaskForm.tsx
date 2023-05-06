@@ -142,6 +142,7 @@ export default function CreateTaskForm({ navigation, route }: Props) {
                                     index: routes.length - 1
                                 });
                             });
+                            navigation.navigate('Task list', { update: true });
                             navigation.navigate('Task info', { taskId: res });
                         });
                     }}>

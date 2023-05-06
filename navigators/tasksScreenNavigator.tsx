@@ -5,7 +5,7 @@ import CreateTaskForm from '../components/createTaskForm/createTaskForm';
 import colors from '../styles/colors.json';
 
 export type TaskListStackParamList = {
-    'Task list': undefined;
+    'Task list': { update: boolean };
     'Task info': { taskId: number };
     'Create task': undefined;
 };
@@ -23,6 +23,7 @@ export default function TasksScreen() {
                 <Stack.Screen
                     name='Task list'
                     component={TaskList}
+                    initialParams={{ update: true }}
                     options={{ headerShown: false }} />
                 <Stack.Screen
                     name='Task info'

@@ -10,12 +10,15 @@ import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigat
 
 type Props = NativeStackScreenProps<TaskListStackParamList, 'Task list'>;
 
-export default function TaskList(props: Props) {
+export default function TaskList({ navigation, route }: Props) {
     const [tasks, setTasks] = useState(new Array<Task>());
 
     useEffect(() => {
+        if (route.params.update) {
         DBManager.getInstance().getAllTasks().then((res) => setTasks(res));
-    }, []);
+            navigation.setParams({ update: false });
+        }
+    }, [route.params.update]);
 
     if (tasks.length == 0)
         return (
