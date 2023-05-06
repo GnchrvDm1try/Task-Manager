@@ -133,7 +133,7 @@ export class DBManager {
                 title TEXT NOT NULL,
                 is_done INTEGER CHECK(is_done IN(0, 1)) NOT NULL DEFAULT 0,
                 addition_date TIMESTAMP NOT NULL DEFAULT (DATETIME('now', 'localtime')),
-                begin_date TIMESTAMP CHECK(begin_date > addition_date),
+                begin_date TIMESTAMP,
                 deadline_date TIMESTAMP CHECK(deadline_date > begin_date ));`,
             );
         });
