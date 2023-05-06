@@ -14,55 +14,58 @@ import colors from '../../styles/colors.json';
 type Props = NativeStackScreenProps<TaskListStackParamList, 'Create task'>;
 
 export default function CreateTaskForm({ navigation, route }: Props) {
+    const MINUTE_IN_MILLISECONDS = 60000;
     const INITIAL_DEADLINE_GAP_IN_MINUTES = 60;
 
     const [title, setTitle] = useState('');
-    const [beginDate, setBeginDate] = useState<Date | undefined>(undefined)
-    const [deadlineDate, setDeadlineDate] = useState<Date | undefined>(undefined)
+    const [beginDate, setBeginDate] = useState(new Date());
+    // Setting the initial value of the deadline date with the begin date's value plus a gap in minutes
+    const [deadlineDate, setDeadlineDate] = useState(new Date(beginDate.getTime() + INITIAL_DEADLINE_GAP_IN_MINUTES * MINUTE_IN_MILLISECONDS));
+    const [isBeginDateUsed, setIsBeginDateUsed] = useState(false);
+    const [isDeadlineDateUsed, setIsDeadlineDateUsed] = useState(false);
 
     return (
         <ScrollView contentContainerStyle={formStyles.formContainer}>
             <TextInput
                 placeholder='Title*'
                 style={[formStyles.inputField, { borderColor: title.trim().length > 0 ? colors.borderColor : 'red' }]}
-                onChangeText={(text) => { setTitle(text.trim()) }}
-                onBlur={() => { Alert.alert('blured') }} />
+                onChangeText={(text) => { setTitle(text.trim()) }} />
 
             <BouncyCheckbox
                 fillColor={colors.primaryColor}
                 text='Date of beginning:'
                 textStyle={[formStyles.hint, { textDecorationLine: 'none' }]}
                 innerIconStyle={{ borderWidth: 2 }}
-                isChecked={!!beginDate}
+                isChecked={isBeginDateUsed}
                 onPress={(isChecked: boolean) => {
-                    if (isChecked) setBeginDate(new Date());
-                    else setBeginDate(undefined);
+                    setIsBeginDateUsed(isChecked);
+                    if (beginDate > deadlineDate)
+                        setBeginDate(new Date(deadlineDate.getTime() - MINUTE_IN_MILLISECONDS));
                 }}
             />
             <View style={[baseStyles.horizontalContainer, formStyles.dateContainer]}>
                 <DateTimePicker
-                    value={beginDate ?? new Date()}
+                    value={beginDate}
                     mode={'date'}
-                    disabled={!beginDate}
+                    disabled={!isBeginDateUsed}
+                    maximumDate={isDeadlineDateUsed ? new Date(deadlineDate.getTime() - MINUTE_IN_MILLISECONDS) : undefined}
                     onChange={(data) => {
-                        if (data.type !== 'dismissed') {
-                            let date: Date = new Date(data.nativeEvent.timestamp!);
-                            beginDate!.setUTCDate(date.getDate());
-                            beginDate!.setUTCMonth(date.getMonth());
-                            beginDate!.setUTCFullYear(date.getFullYear());
+                        if (data.type !== 'dismissed' && beginDate) {
+                            const date: Date = new Date(data.nativeEvent.timestamp!);
+                            setBeginDate(new Date(date.getFullYear(), date.getMonth(), date.getDate(), beginDate.getHours(), beginDate.getMinutes()));
                         }
                     }}
                 />
                 <DateTimePicker
-                    value={beginDate ?? new Date()}
+                    value={beginDate}
                     mode={'time'}
                     is24Hour={false}
-                    disabled={!beginDate}
+                    disabled={!isBeginDateUsed}
+                    maximumDate={isDeadlineDateUsed ? new Date(deadlineDate.getTime() - MINUTE_IN_MILLISECONDS) : undefined}
                     onChange={(data) => {
-                        if (data.type !== 'dismissed') {
-                            let date: Date = new Date(data.nativeEvent.timestamp!);
-                            beginDate!.setUTCHours(date.getHours());
-                            beginDate!.setUTCMinutes(date.getMinutes());
+                        if (data.type !== 'dismissed' && beginDate) {
+                            const date: Date = new Date(data.nativeEvent.timestamp!);
+                            setBeginDate(new Date(beginDate.getFullYear(), beginDate.getMonth(), beginDate.getDate(), date.getHours(), date.getMinutes()));
                         }
                     }}
                 />
@@ -73,40 +76,36 @@ export default function CreateTaskForm({ navigation, route }: Props) {
                 text='Deadline date:'
                 textStyle={[formStyles.hint, { textDecorationLine: 'none' }]}
                 innerIconStyle={{ borderWidth: 2 }}
-                isChecked={!!deadlineDate}
+                isChecked={isDeadlineDateUsed}
                 onPress={(isChecked: boolean) => {
-                    if (isChecked) setDeadlineDate(new Date(Date.now() + INITIAL_DEADLINE_GAP_IN_MINUTES * 60000));
-                    else setDeadlineDate(undefined);
+                    setIsDeadlineDateUsed(isChecked)
+                    if (deadlineDate < beginDate)
+                        setDeadlineDate(new Date(beginDate.getTime() + MINUTE_IN_MILLISECONDS))
                 }}
             />
             <View style={[baseStyles.horizontalContainer, formStyles.dateContainer]}>
                 <DateTimePicker
-                    // Setting the initial value of the date picker with the deadline date's value if it's provided,
-                    // otherwise, with the current date plus a gap in minutes, so date will increase if hours was more than 24
-                    value={deadlineDate ?? new Date(Date.now() + INITIAL_DEADLINE_GAP_IN_MINUTES * 60000)}
+                    value={deadlineDate}
                     mode={'date'}
-                    disabled={!deadlineDate}
+                    disabled={!isDeadlineDateUsed}
+                    minimumDate={isBeginDateUsed ? new Date(beginDate.getTime() + MINUTE_IN_MILLISECONDS) : undefined}
                     onChange={(data) => {
-                        if (data.type !== 'dismissed') {
-                            let date: Date = new Date(data.nativeEvent.timestamp!);
-                            deadlineDate!.setDate(date.getDate());
-                            deadlineDate!.setMonth(date.getMonth());
-                            deadlineDate!.setFullYear(date.getFullYear());
+                        if (data.type !== 'dismissed' && deadlineDate) {
+                            const date: Date = new Date(data.nativeEvent.timestamp!);
+                            setDeadlineDate(new Date(date.getFullYear(), date.getMonth(), date.getDate(), deadlineDate.getHours(), deadlineDate.getMinutes()));
                         }
                     }}
                 />
                 <DateTimePicker
-                    // Setting the initial value of the time picker with the deadline date's value if it's provided,
-                    // otherwise, with the current date plus a gap in minutes
-                    value={deadlineDate ?? new Date(Date.now() + INITIAL_DEADLINE_GAP_IN_MINUTES * 60000)}
+                    value={deadlineDate}
                     mode={'time'}
                     is24Hour={true}
-                    disabled={!deadlineDate}
+                    disabled={!isDeadlineDateUsed}
+                    minimumDate={isBeginDateUsed ? new Date(beginDate.getTime() + MINUTE_IN_MILLISECONDS) : undefined}
                     onChange={(data) => {
-                        if (data.type !== 'dismissed') {
-                            let date: Date = new Date(data.nativeEvent.timestamp!);
-                            deadlineDate!.setUTCHours(date.getHours());
-                            deadlineDate!.setUTCMinutes(date.getMinutes());
+                        if (data.type !== 'dismissed' && deadlineDate) {
+                            const date: Date = new Date(data.nativeEvent.timestamp!);
+                            setDeadlineDate(new Date(deadlineDate.getFullYear(), deadlineDate.getMonth(), deadlineDate.getDate(), date.getHours(), date.getMinutes()));
                         }
                     }}
                 />
@@ -122,8 +121,8 @@ export default function CreateTaskForm({ navigation, route }: Props) {
                         }
                         let task: Task = new Task({
                             title: title,
-                            beginDate: beginDate,
-                            deadlineDate: deadlineDate
+                            beginDate: isBeginDateUsed ? beginDate : undefined,
+                            deadlineDate: isDeadlineDateUsed ? deadlineDate : undefined
                         });
 
                         DBManager.getInstance().createTask(task).then((res) => {
