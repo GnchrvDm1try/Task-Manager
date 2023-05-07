@@ -126,14 +126,10 @@ export default function CreateTaskForm({ navigation, route }: Props) {
                         });
 
                         DBManager.getInstance().createTask(task).then((res) => {
-                            // Updating navigation state using reset common action, so the navigation route of the
-                            // task list will be reassigned
+                            // Updating navigation state using reset common action
                             navigation.dispatch(state => {
-                                const routes = state.routes;
-                                const index = routes.findIndex(el => el.name === 'Task list');
-
-                                if (index !== -1)
-                                    routes[index] = { key: routes[index].key, name: routes[index].name };
+                                // Removing 'Create task' screen, so the back button will lead to the previous page from the task creation screen
+                                const routes = state.routes.filter(r => r.name !== 'Create task');
 
                                 return CommonActions.reset({
                                     ...state,
