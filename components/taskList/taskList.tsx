@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import TaskItem from '../taskItem/taskItem';
 import Task from '../../models/Task';
 import { DBManager } from '../../DBManager';
+import AddIcon from '../../assets/icons/add_icon.svg';
 import { baseStyles } from '../../styles/baseStyles';
+import colors from '../../styles/colors.json';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 
@@ -20,15 +22,15 @@ export default function TaskList({ navigation, route }: Props) {
         }
     }, [route.params.update]);
 
-    if (tasks.length == 0)
-        return (
-            <SafeAreaView style={baseStyles.alertContainer}>
-                <Text style={baseStyles.header}>You have no tasks</Text>
-            </SafeAreaView>
-        );
     return (
-        <SafeAreaView style={[baseStyles.container, { marginRight: 0 }]}>
-            <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item}></TaskItem>)} />
+        <SafeAreaView style={[tasks.length === 0 ? baseStyles.alertContainer : baseStyles.container, { marginRight: 0 }]}>
+            {tasks.length === 0
+                ? <Text style={baseStyles.headerL}>You have no tasks</Text>
+                : <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item}></TaskItem>)} />}
+            <TouchableOpacity style={baseStyles.addButton}
+                onPress={() => navigation.navigate('Create task')}>
+                <AddIcon height={60} width={60} color={colors.primaryColor} />
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }

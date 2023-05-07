@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 import { FlatList } from 'react-native-gesture-handler';
@@ -25,13 +25,25 @@ export default function TaskDetails(props: Props) {
         });
     }, []);
 
+    if (task === undefined)
+        return (
+            <SafeAreaView style={baseStyles.alertContainer}>
+                <Text style={baseStyles.headerL}>Loading...</Text>
+            </SafeAreaView>
+        );
+    if (task === null)
+        return (
+            <SafeAreaView style={baseStyles.alertContainer}>
+                <Text style={baseStyles.headerL}>Failed to find the task</Text>
+            </SafeAreaView>
+        );
     return (
         <View style={baseStyles.container}>
             <View style={baseStyles.horizontalContainer}>
                 <TouchableOpacity
                     onPress={() => { }}
                     style={baseStyles.mainButton}>
-                    <Text style={styles.buttonTextContent}>{task.isDone ? 'Mark as unfinished' : 'Mark as finished'}</Text>
+                    <Text style={baseStyles.buttonTextContent}>{task.isDone ? 'Mark as unfinished' : 'Mark as finished'}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => { }}
@@ -44,28 +56,51 @@ export default function TaskDetails(props: Props) {
                     <DeleteIcon style={styles.buttonIconContent} />
                 </TouchableOpacity>
             </View>
+            <View style={styles.dateContainer}>
+                <Text style={baseStyles.hintM}>Created at: </Text>
+                <Text style={baseStyles.headerM}>{task.additionDate.toLocaleString()}</Text>
+            </View>
+            {
+                task.beginDate &&
+                <View style={styles.dateContainer}>
+                    <Text style={baseStyles.hintM}>Date of beginning: </Text>
+                    <Text style={baseStyles.headerM}>{`${task.beginDate.toLocaleDateString()}, ${task.beginDate.getHours()}:${task.beginDate.getMinutes()}`}</Text>
+                </View>
+            }
+            {
+                task.deadlineDate &&
+                <View style={styles.dateContainer}>
+                    <Text style={baseStyles.hintM}>Deadline date: </Text>
+                    <Text style={baseStyles.headerM}>{`${task.deadlineDate.toLocaleDateString()}, ${task.deadlineDate.getHours()}:${task.deadlineDate.getMinutes()}`}</Text>
+                </View>
+            }
             <FlatList data={task.stages} renderItem={({ item }) => {
                 return (
                     <View>
                         <View style={styles.headerContainer}>
-                            <TouchableOpacity
-                                onPress={() => { }}>
-                                {
-                                    !!item.isDone &&
-                                    <UnCheckedMarkIcon height={30} width={30} color={colors.borderColor} style={{ marginRight: 10 }} />
-                                }
-                                {
-                                    !item.isDone &&
-                                    <CheckedMarkIcon height={30} width={30} style={{ marginRight: 10 }} />
-                                }
-                            </TouchableOpacity>
-                            <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.stageHeader, item.isDone ? {color: colors.borderColor} : {}]}>{item.title}</Text>
+                            <Text style={[styles.stageHeader, item.isDone ? { color: colors.borderColor } : {}]}>
+                                <TouchableOpacity
+                                    onPress={() => { }}>
+                                    {
+                                        item.isDone &&
+                                        <UnCheckedMarkIcon height={30} width={30} color={colors.borderColor} style={{ marginRight: 10 }} />
+                                    }
+                                    {
+                                        !item.isDone &&
+                                        <CheckedMarkIcon height={30} width={30} style={{ marginRight: 10 }} />
+                                    }
+                                </TouchableOpacity>
+                                {item.title}
+                            </Text>
                         </View>
-                        <Text style={[styles.stageDescription, item.isDone ? {color: colors.borderColor} : {}]}>{item.description}</Text>
+                        <Text style={[{ marginVertical: 4 }, item.isDone ? { color: colors.borderColor } : {}]}>
+                            <Text style={baseStyles.hintM}>Deadline: </Text>
+                            <Text style={baseStyles.headerM}>{`${item.deadlineDate?.toLocaleDateString()}, ${item.deadlineDate?.getHours()}:${item.deadlineDate?.getMinutes()}`}</Text>
+                        </Text>
+                        <Text style={[styles.stageDescription, item.isDone ? { color: colors.borderColor } : {}]}>{item.description}</Text>
                     </View>
                 );
-            }
-            } />
+            }} />
         </View>
     );
 }

@@ -7,19 +7,29 @@ export const baseStyles = StyleSheet.create({
         margin: 15,
         marginBottom: 0
     },
-    alertContainer: {
-        flex: 1,
-        justifyContent: 'center'
-    },
-    header: {
-        textAlign: 'center',
-        fontSize: 25,
-        fontWeight: '600'
-    },
     horizontalContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
+    },
+    alertContainer: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    headerL: {
+        textAlign: 'center',
+        fontSize: 25,
+        fontWeight: '600'
+    },
+    headerM: {
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '600',
+        paddingVertical: 5
+    },
+    hintM: {
+        fontSize: 20,
+        color: colors.borderColor
     },
     mainButton: {
         height: 45,
@@ -30,5 +40,13 @@ export const baseStyles = StyleSheet.create({
         borderColor: colors.borderColor,
         borderRadius: 1000,
         backgroundColor: "white"
+    },
+    buttonTextContent: {
+        fontSize: 24,
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 10,
+        right: 10
     }
 });

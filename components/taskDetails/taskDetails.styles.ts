@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../styles/colors.json';
 
 export const styles = StyleSheet.create({
     stageHeader: {
@@ -15,12 +14,14 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 15
     },
-    buttonTextContent: {
-        fontSize: 24,
-    },
     buttonIconContent: {
         maxHeight: 34,
         minHeight: 34,
         maxWidth: 34
+    },
+    dateContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: 3
     }
 });
