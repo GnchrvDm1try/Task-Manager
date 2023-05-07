@@ -1,7 +1,10 @@
+import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 import { FlatList } from 'react-native-gesture-handler';
+import Task from '../../models/Task';
+import { DBManager } from '../../DBManager';
 import EditIcon from '../../assets/icons/edit_icon.svg';
 import DeleteIcon from '../../assets/icons/bucket_with_a_cross_icon.svg';
 import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
@@ -13,7 +16,14 @@ import colors from '../../styles/colors.json';
 type Props = NativeStackScreenProps<TaskListStackParamList, 'Task info'>;
 
 export default function TaskDetails(props: Props) {
-    const { task } = props.route.params;
+    const [task, setTask] = useState<Task | null | undefined>(undefined);
+
+    useEffect(() => {
+        DBManager.getInstance().getTaskWithStages(props.route.params.taskId).then((res) => {
+            setTask(res);
+            props.navigation.setOptions({ title: res?.title });
+        });
+    }, []);
 
     return (
         <View style={baseStyles.container}>
