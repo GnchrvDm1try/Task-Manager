@@ -30,25 +30,36 @@ export class DBManager {
         });
     }
 
-    public getAllTasks(): Promise<Task[]> {
+    public getAllTasksWithStages(): Promise<Task[]> {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
                 tx.executeSql(
-                    `SELECT * FROM Tasks`,
+                    `SELECT T.id, T.title, T.is_done, T.addition_date, T.begin_date, T.deadline_date, S.id AS stage_id, S.title AS stage_title, S.is_done AS stage_is_done, S.description AS stage_description, S.deadline_date AS stage_deadline_date FROM Tasks T
+                    LEFT JOIN Stages S ON S.task_id = T.id`,
                     [],
                     (_, { rows }) => {
                         let tasks: Task[] = new Array<Task>();
                         for (let i = 0; i < rows.length; i++) {
-                            let currentRow = rows.item(i);
-                            let task = new Task({
+                            const currentRow = rows.item(i);
+                            if (!tasks.find(t => t.id === currentRow.id))
+                                tasks.push(new Task({
                                 id: currentRow.id,
                                 title: currentRow.title,
                                 isDone: currentRow.is_done,
                                 additionDate: new Date(currentRow.addition_date),
                                 beginDate: currentRow.begin_date ? new Date(currentRow.begin_date) : undefined,
                                 deadlineDate: currentRow.deadline_date ? new Date(currentRow.deadline_date) : undefined
-                            });
-                            tasks.push(task);
+                                }));
+
+                            if (currentRow.stage_id)
+                                tasks.find(t => t.id === currentRow.id)!.stages.push(new Stage({
+                                    id: currentRow.stage_id,
+                                    taskId: currentRow.id,
+                                    title: currentRow.stage_title,
+                                    isDone: currentRow.stage_is_done,
+                                    description: currentRow.stage_description,
+                                    deadlineDate: currentRow.stage_deadline_date ? new Date(currentRow.stage_deadline_date) : undefined
+                                }));
                         }
                         resolve(tasks);
                     },

@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Task from '../../models/Task';
-import Stage from '../../models/Stage';
-import { DBManager } from '../../DBManager';
 import { styles } from './taskItem.styles';
 import { baseStyles } from '../../styles/baseStyles';
 
@@ -13,15 +10,7 @@ type Props = {
 }
 
 export default function TaskItem({ task }: Props) {
-  const [stages, setStages] = useState(new Array<Stage>());
   const navigation1 = useNavigation();
-
-  useEffect(() => {
-    DBManager.getInstance().getStages(task.id).then((res) => {
-      task.stages = res;
-      setStages(res);
-    });
-  }, []);
 
   return (
     <TouchableOpacity

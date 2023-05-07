@@ -15,7 +15,7 @@ export default function TaskList({ navigation, route }: Props) {
 
     useEffect(() => {
         if (route.params.update) {
-        DBManager.getInstance().getAllTasks().then((res) => setTasks(res));
+            DBManager.getInstance().getAllTasksWithStages().then((res) => setTasks(res));
             navigation.setParams({ update: false });
         }
     }, [route.params.update]);
