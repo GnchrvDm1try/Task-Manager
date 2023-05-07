@@ -21,8 +21,8 @@ export class DBManager {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
                 tx.executeSql(
-                    `INSERT INTO Tasks (title, begin_date, deadline_date) VALUES (?, ?, ?);`,
-                    [task.title, task.beginDate?.toString() ?? null, task.deadlineDate?.toString() ?? null],
+                    `INSERT INTO Tasks (title, is_done, addition_date, begin_date, deadline_date) VALUES (?, ?, ?, ?, ?);`,
+                    [task.title, task.isDone ? '1' : '0', task.additionDate.toISOString(), task.beginDate?.toISOString() ?? null, task.deadlineDate?.toISOString() ?? null],
                     (_, result) => { resolve(result.insertId!); },
                     (_, error) => { reject(error); return false; }
                 );
@@ -43,12 +43,12 @@ export class DBManager {
                             const currentRow = rows.item(i);
                             if (!tasks.find(t => t.id === currentRow.id))
                                 tasks.push(new Task({
-                                id: currentRow.id,
-                                title: currentRow.title,
-                                isDone: currentRow.is_done,
-                                additionDate: new Date(currentRow.addition_date),
-                                beginDate: currentRow.begin_date ? new Date(currentRow.begin_date) : undefined,
-                                deadlineDate: currentRow.deadline_date ? new Date(currentRow.deadline_date) : undefined
+                                    id: currentRow.id,
+                                    title: currentRow.title,
+                                    isDone: currentRow.is_done,
+                                    additionDate: new Date(currentRow.addition_date),
+                                    beginDate: currentRow.begin_date ? new Date(currentRow.begin_date) : undefined,
+                                    deadlineDate: currentRow.deadline_date ? new Date(currentRow.deadline_date) : undefined
                                 }));
 
                             if (currentRow.stage_id)
