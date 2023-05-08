@@ -137,6 +137,20 @@ export class DBManager {
         });
     }
 
+    public updateTask(task: Task): Promise<void> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `UPDATE Tasks SET title = ?, is_done = ?, addition_date = ?, begin_date = ?, deadline_date = ?
+                    WHERE id = ?`,
+                    [task.title, task.isDone ? '1' : '0', task.additionDate.toISOString(), task.beginDate?.toISOString() ?? null, task.deadlineDate?.toISOString() ?? null, task.id],
+                    (_, result) => { resolve(); },
+                    (_, error) => { reject(error); return false; }
+                )
+            })
+        })
+    }
+
     private static createTasksTableIfNotExists() {
         DBManager.db.transaction(tx => {
             tx.executeSql(`CREATE TABLE IF NOT EXISTS Tasks (
