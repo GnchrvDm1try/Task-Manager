@@ -13,7 +13,7 @@ import colors from '../../styles/colors.json';
 
 type Props = NativeStackScreenProps<TaskListStackParamList, 'Create task'>;
 
-export default function CreateTaskForm({ navigation, route }: Props) {
+export default function TaskForm({ navigation, route }: Props) {
     const MINUTE_IN_MILLISECONDS = 60000;
     const INITIAL_DEADLINE_GAP_IN_MINUTES = 60;
 

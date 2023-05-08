@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TaskDetails from '../components/taskDetails/taskDetails';
 import TaskList from '../components/taskList/taskList';
-import CreateTaskForm from '../components/createTaskForm/createTaskForm';
+import TaskForm from '../components/taskForm/taskForm';
 import colors from '../styles/colors.json';
 
 export type TaskListStackParamList = {
