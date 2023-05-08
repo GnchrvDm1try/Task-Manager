@@ -41,7 +41,10 @@ export default function TaskDetails(props: Props) {
         <View style={baseStyles.container}>
             <View style={baseStyles.horizontalContainer}>
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => {
+                        const newTask = { ...task, isDone: !task.isDone };
+                        DBManager.getInstance().updateTask(newTask).then(() => setTask(newTask));
+                    }}
                     style={baseStyles.mainButton}>
                     <Text style={baseStyles.buttonTextContent}>{task.isDone ? 'Mark as unfinished' : 'Mark as finished'}</Text>
                 </TouchableOpacity>
