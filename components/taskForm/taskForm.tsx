@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -13,16 +13,38 @@ import colors from '../../styles/colors.json';
 
 type Props = NativeStackScreenProps<TaskListStackParamList, 'Create task'>;
 
-export default function TaskForm({ navigation, route }: Props) {
+export default function TaskForm(props: Props) {
     const MINUTE_IN_MILLISECONDS = 60000;
     const INITIAL_DEADLINE_GAP_IN_MINUTES = 60;
-
+    const isEditing = props.route.name === 'Edit task';
+    
+    const [placeholderTask, setPlaceholderTask] = useState<Task | undefined>(undefined);
     const [title, setTitle] = useState('');
     const [beginDate, setBeginDate] = useState(new Date());
     // Setting the initial value of the deadline date with the begin date's value plus a gap in minutes
     const [deadlineDate, setDeadlineDate] = useState(new Date(beginDate.getTime() + INITIAL_DEADLINE_GAP_IN_MINUTES * MINUTE_IN_MILLISECONDS));
     const [isBeginDateUsed, setIsBeginDateUsed] = useState(false);
     const [isDeadlineDateUsed, setIsDeadlineDateUsed] = useState(false);
+
+    useEffect(() => {
+        if (isEditing) {
+            const editProps = props as NativeStackScreenProps<TaskListStackParamList, 'Edit task'>;
+            DBManager.getInstance().getTaskWithStages(editProps.route.params.taskId).then((res) => {
+                if (res) {
+                    setPlaceholderTask(res);
+                    setTitle(res.title);
+                    if (res.beginDate) {
+                        setBeginDate(res.beginDate);
+                        setIsBeginDateUsed(true);
+                    }
+                    if (res.deadlineDate) {
+                        setDeadlineDate(res.deadlineDate);
+                        setIsDeadlineDateUsed(true);
+                    }
+                }
+            });
+        }
+    }, [])
 
     return (
         <ScrollView contentContainerStyle={formStyles.formContainer}>
