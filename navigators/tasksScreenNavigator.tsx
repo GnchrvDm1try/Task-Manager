@@ -8,6 +8,7 @@ export type TaskListStackParamList = {
     'Task list': { update: boolean };
     'Task info': { taskId: number };
     'Create task': undefined;
+    'Edit task': { taskId: number };
 };
 
 const Stack = createNativeStackNavigator<TaskListStackParamList>();
@@ -30,7 +31,10 @@ export default function TasksScreen() {
                     component={TaskDetails} />
                 <Stack.Screen
                     name='Create task'
-                    component={CreateTaskForm} />
+                    component={TaskForm} />
+                <Stack.Screen
+                    name='Edit task'
+                    component={TaskForm} />
             </Stack.Group>
         </Stack.Navigator>
     );

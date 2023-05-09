@@ -15,13 +15,13 @@ import colors from '../../styles/colors.json';
 
 type Props = NativeStackScreenProps<TaskListStackParamList, 'Task info'>;
 
-export default function TaskDetails(props: Props) {
+export default function TaskDetails({ navigation, route }: Props) {
     const [task, setTask] = useState<Task | null | undefined>(undefined);
 
     useEffect(() => {
-        DBManager.getInstance().getTaskWithStages(props.route.params.taskId).then((res) => {
+        DBManager.getInstance().getTaskWithStages(route.params.taskId).then((res) => {
             setTask(res);
-            props.navigation.setOptions({ title: res?.title });
+            navigation.setOptions({ title: res?.title });
         });
     }, []);
 
@@ -49,7 +49,9 @@ export default function TaskDetails(props: Props) {
                     <Text style={baseStyles.buttonTextContent}>{task.isDone ? 'Mark as unfinished' : 'Mark as finished'}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => {
+                        navigation.navigate('Edit task', { taskId: task.id });
+                    }}
                     style={baseStyles.mainButton}>
                     <EditIcon style={styles.buttonIconContent} />
                 </TouchableOpacity>
