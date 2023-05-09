@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -11,7 +10,7 @@ import { baseStyles } from '../../styles/baseStyles';
 import { formStyles } from '../../styles/formStyles';
 import colors from '../../styles/colors.json';
 
-type Props = NativeStackScreenProps<TaskListStackParamList, 'Create task'>;
+type Props = NativeStackScreenProps<TaskListStackParamList>;
 
 export default function TaskForm(props: Props) {
     const MINUTE_IN_MILLISECONDS = 60000;
@@ -49,9 +48,10 @@ export default function TaskForm(props: Props) {
     return (
         <ScrollView contentContainerStyle={formStyles.formContainer}>
             <TextInput
+                value={title}
                 placeholder='Title*'
                 style={[formStyles.inputField, { borderColor: title.trim().length > 0 ? colors.borderColor : 'red' }]}
-                onChangeText={(text) => { setTitle(text.trim()) }} />
+                onChangeText={(text) => { setTitle(text) }} />
 
             <BouncyCheckbox
                 fillColor={colors.primaryColor}
@@ -59,8 +59,9 @@ export default function TaskForm(props: Props) {
                 textStyle={[formStyles.hint, { textDecorationLine: 'none' }]}
                 innerIconStyle={{ borderWidth: 2 }}
                 isChecked={isBeginDateUsed}
-                onPress={(isChecked: boolean) => {
-                    setIsBeginDateUsed(isChecked);
+                disableBuiltInState
+                onPress={() => {
+                    setIsBeginDateUsed(!isBeginDateUsed);
                     if (beginDate > deadlineDate)
                         setBeginDate(new Date(deadlineDate.getTime() - MINUTE_IN_MILLISECONDS));
                 }}
@@ -99,8 +100,9 @@ export default function TaskForm(props: Props) {
                 textStyle={[formStyles.hint, { textDecorationLine: 'none' }]}
                 innerIconStyle={{ borderWidth: 2 }}
                 isChecked={isDeadlineDateUsed}
-                onPress={(isChecked: boolean) => {
-                    setIsDeadlineDateUsed(isChecked)
+                disableBuiltInState
+                onPress={() => {
+                    setIsDeadlineDateUsed(!isDeadlineDateUsed)
                     if (deadlineDate < beginDate)
                         setDeadlineDate(new Date(beginDate.getTime() + MINUTE_IN_MILLISECONDS))
                 }}
@@ -141,33 +143,31 @@ export default function TaskForm(props: Props) {
                             Alert.alert('The title has to be at least 1 character long');
                             return;
                         }
-                        let task: Task = new Task({
+                        const task: Task = new Task({
+                            ...placeholderTask ?? undefined,
                             title: title,
                             beginDate: isBeginDateUsed ? beginDate : undefined,
                             deadlineDate: isDeadlineDateUsed ? deadlineDate : undefined
                         });
 
-                        DBManager.getInstance().createTask(task).then((res) => {
-                            // Updating navigation state using reset common action
-                            navigation.dispatch(state => {
-                                // Removing 'Create task' screen, so the back button will lead to the previous page from the task creation screen
-                                const routes = state.routes.filter(r => r.name !== 'Create task');
-
-                                return CommonActions.reset({
-                                    ...state,
-                                    routes,
-                                    index: routes.length - 1
-                                });
+                        if (isEditing)
+                            DBManager.getInstance().updateTask(task).then(() => {
+                                if (placeholderTask) {
+                                    props.navigation.navigate('Task list', { update: true });
+                                    props.navigation.navigate('Task info', { taskId: task!.id });
+                                }
                             });
-                            navigation.navigate('Task list', { update: true });
-                            navigation.navigate('Task info', { taskId: res });
-                        });
+                        else
+                            DBManager.getInstance().createTask(task).then((res) => {
+                                props.navigation.navigate('Task list', { update: true });
+                                props.navigation.navigate('Task info', { taskId: res });
+                            });
                     }}>
-                    <Text style={baseStyles.buttonTextContent}>Create</Text>
+                    <Text style={baseStyles.buttonTextContent}>{isEditing ? 'Edit' : 'Create'}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={baseStyles.mainButton}
-                    onPress={() => navigation.goBack()}>
+                    onPress={() => props.navigation.goBack()}>
                     <Text style={baseStyles.buttonTextContent}>Cancel</Text>
                 </TouchableOpacity>
             </View>
