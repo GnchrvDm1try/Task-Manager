@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 import { FlatList } from 'react-native-gesture-handler';
@@ -56,7 +56,12 @@ export default function TaskDetails({ navigation, route }: Props) {
                     <EditIcon style={styles.buttonIconContent} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => {
+                        Alert.alert('Deleting of the task', 'Are you sure you want to permanently delete this task?', [
+                            { text: 'Delete', onPress: () => DBManager.getInstance().deleteTask(task.id).then(res => navigation.navigate('Task list', { update: true })) },
+                            { text: 'Cancel', style: 'cancel' }
+                        ]);
+                    }}
                     style={baseStyles.mainButton}>
                     <DeleteIcon style={styles.buttonIconContent} />
                 </TouchableOpacity>
