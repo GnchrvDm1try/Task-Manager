@@ -146,9 +146,23 @@ export class DBManager {
                     [task.title, task.isDone ? '1' : '0', task.additionDate.toISOString(), task.beginDate?.toISOString() ?? null, task.deadlineDate?.toISOString() ?? null, task.id],
                     (_, result) => { resolve(); },
                     (_, error) => { reject(error); return false; }
-                )
-            })
-        })
+                );
+            });
+        });
+    }
+
+    public deleteTask(id: number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `DELETE FROM TASKS
+                    WHERE id = ?`,
+                    [id],
+                    (_, result) => { resolve(result) },
+                    (_, error) => { reject(error); return false; }
+                );
+            });
+        });
     }
 
     private static createTasksTableIfNotExists() {
