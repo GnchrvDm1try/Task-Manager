@@ -4,7 +4,7 @@ import Task from './Task';
 interface IStageProps {
     title: string;
     taskId: number;
-    id: number;
+    id?: number;
     isDone?: boolean | number;
     description?: string;
     deadlineDate?: Date;
@@ -20,7 +20,7 @@ export default class Stage {
     task: Task | undefined;
 
     constructor(props: IStageProps) {
-        this.id = props.id;
+        this.id = props.id ?? 0;
         this.taskId = props.taskId;
         this.title = props.title;
         this.isDone = Boolean(props.isDone);
