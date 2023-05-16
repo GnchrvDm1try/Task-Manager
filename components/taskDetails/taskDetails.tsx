@@ -75,14 +75,14 @@ export default function TaskDetails({ navigation, route }: Props) {
                 task.beginDate &&
                 <View style={styles.dateContainer}>
                     <Text style={baseStyles.hintM}>Date of beginning: </Text>
-                    <Text style={baseStyles.headerM}>{`${task.beginDate.toLocaleDateString()}, ${task.beginDate.getHours()}:${task.beginDate.getMinutes()}`}</Text>
+                    <Text style={baseStyles.headerM}>{task.beginDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
                 </View>
             }
             {
                 task.deadlineDate &&
                 <View style={styles.dateContainer}>
                     <Text style={baseStyles.hintM}>Deadline date: </Text>
-                    <Text style={baseStyles.headerM}>{`${task.deadlineDate.toLocaleDateString()}, ${task.deadlineDate.getHours()}:${task.deadlineDate.getMinutes()}`}</Text>
+                    <Text style={baseStyles.headerM}>{task.deadlineDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
                 </View>
             }
             <FlatList data={task.stages} renderItem={({ item }) => {
@@ -104,10 +104,13 @@ export default function TaskDetails({ navigation, route }: Props) {
                                 {item.title}
                             </Text>
                         </View>
-                        <Text style={[{ marginVertical: 4 }, item.isDone ? { color: colors.borderColor } : {}]}>
-                            <Text style={baseStyles.hintM}>Deadline: </Text>
-                            <Text style={baseStyles.headerM}>{`${item.deadlineDate?.toLocaleDateString()}, ${item.deadlineDate?.getHours()}:${item.deadlineDate?.getMinutes()}`}</Text>
-                        </Text>
+                        {
+                            item.deadlineDate &&
+                            <Text style={[{ marginVertical: 4 }, item.isDone ? { color: colors.borderColor } : {}]}>
+                                <Text style={baseStyles.hintM}>Deadline: </Text>
+                                <Text style={baseStyles.headerM}>{item.deadlineDate?.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
+                            </Text>
+                        }
                         <Text style={[styles.stageDescription, item.isDone ? { color: colors.borderColor } : {}]}>{item.description}</Text>
                     </View>
                 );
