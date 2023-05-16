@@ -30,6 +30,19 @@ export class DBManager {
         });
     }
 
+    public createStage(stage: Stage): Promise<number> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `INSERT INTO Stages (task_id, title, is_done, description, deadline_date) VALUES (?, ?, ?, ?, ?)`,
+                    [stage.taskId, stage.title, stage.isDone ? '1' : '0', stage.description ?? null, stage.deadlineDate?.toISOString() ?? null],
+                    (_, result) => resolve(result.insertId!),
+                    (_, error) => { reject(error); return false; }
+                )
+            })
+        })
+    }
+
     public getAllTasksWithStages(): Promise<Task[]> {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
