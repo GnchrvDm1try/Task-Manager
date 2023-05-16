@@ -4,11 +4,10 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 import { FlatList } from 'react-native-gesture-handler';
 import Task from '../../models/Task';
+import StageItem from '../stageItem/stageItem';
 import { DBManager } from '../../DBManager';
 import EditIcon from '../../assets/icons/edit_icon.svg';
 import DeleteIcon from '../../assets/icons/bucket_with_a_cross_icon.svg';
-import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
-import UnCheckedMarkIcon from '../../assets/icons/unchecked_mark_icon.svg';
 import AddIcon from '../../assets/icons/add_icon.svg';
 import { styles } from './taskDetails.styles';
 import { baseStyles } from '../../styles/baseStyles';
@@ -85,36 +84,8 @@ export default function TaskDetails({ navigation, route }: Props) {
                     <Text style={baseStyles.headerM}>{task.deadlineDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
                 </View>
             }
-            <FlatList data={task.stages} renderItem={({ item }) => {
-                return (
-                    <View>
-                        <View style={styles.headerContainer}>
-                            <Text style={[styles.stageHeader, item.isDone ? { color: colors.borderColor } : {}]}>
-                                <TouchableOpacity
-                                    onPress={() => { }}>
-                                    {
-                                        item.isDone &&
-                                        <UnCheckedMarkIcon height={30} width={30} color={colors.borderColor} style={{ marginRight: 10 }} />
-                                    }
-                                    {
-                                        !item.isDone &&
-                                        <CheckedMarkIcon height={30} width={30} style={{ marginRight: 10 }} />
-                                    }
-                                </TouchableOpacity>
-                                {item.title}
-                            </Text>
-                        </View>
-                        {
-                            item.deadlineDate &&
-                            <Text style={[{ marginVertical: 4 }, item.isDone ? { color: colors.borderColor } : {}]}>
-                                <Text style={baseStyles.hintM}>Deadline: </Text>
-                                <Text style={baseStyles.headerM}>{item.deadlineDate?.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
-                            </Text>
-                        }
-                        <Text style={[styles.stageDescription, item.isDone ? { color: colors.borderColor } : {}]}>{item.description}</Text>
-                    </View>
-                );
-            }} />
+            <FlatList data={task.stages} renderItem={({ item }) => (<StageItem stage={item} />)} />
+
             <TouchableOpacity style={baseStyles.addButton}
                 onPress={() => navigation.navigate('Create stage', { taskId: task.id })}>
                 <AddIcon height={60} width={60} color={colors.primaryColor} />
