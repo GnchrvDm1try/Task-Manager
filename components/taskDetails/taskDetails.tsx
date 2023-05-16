@@ -9,6 +9,7 @@ import EditIcon from '../../assets/icons/edit_icon.svg';
 import DeleteIcon from '../../assets/icons/bucket_with_a_cross_icon.svg';
 import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
 import UnCheckedMarkIcon from '../../assets/icons/unchecked_mark_icon.svg';
+import AddIcon from '../../assets/icons/add_icon.svg';
 import { styles } from './taskDetails.styles';
 import { baseStyles } from '../../styles/baseStyles';
 import colors from '../../styles/colors.json';
@@ -111,6 +112,10 @@ export default function TaskDetails({ navigation, route }: Props) {
                     </View>
                 );
             }} />
+            <TouchableOpacity style={baseStyles.addButton}
+                onPress={() => navigation.navigate('Create stage', { taskId: task.id })}>
+                <AddIcon height={60} width={60} color={colors.primaryColor} />
+            </TouchableOpacity>
         </View>
     );
 }
