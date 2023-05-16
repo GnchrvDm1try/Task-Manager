@@ -13,7 +13,7 @@ type Props = {
 export default function StageItem({ stage }: Props) {
     return (
         <View>
-            <Text style={[styles.stageHeader, stage.isDone ? { color: colors.borderColor } : {}]}>
+            <Text style={[baseStyles.headerL, stage.isDone ? { color: colors.borderColor } : {}]}>
                 <TouchableOpacity
                     onPress={() => { }}>
                     {
@@ -30,8 +30,8 @@ export default function StageItem({ stage }: Props) {
             {
                 stage.deadlineDate &&
                 <Text style={[{ marginVertical: 4 }, stage.isDone ? { color: colors.borderColor } : {}]}>
-                    <Text style={baseStyles.hintM}>Deadline: </Text>
-                    <Text style={baseStyles.headerM}>{stage.deadlineDate?.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
+                    <Text style={baseStyles.hintS}>Deadline: </Text>
+                    <Text style={baseStyles.headerS}>{stage.deadlineDate?.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
                 </Text>
             }
             <Text style={[styles.stageDescription, stage.isDone ? { color: colors.borderColor } : {}]}>{stage.description}</Text>

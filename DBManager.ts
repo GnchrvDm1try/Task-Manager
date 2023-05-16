@@ -21,9 +21,9 @@ export class DBManager {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
                 tx.executeSql(
-                    `INSERT INTO Tasks (title, is_done, addition_date, begin_date, deadline_date) VALUES (?, ?, ?, ?, ?);`,
+                    `INSERT INTO Tasks (title, is_done, addition_date, begin_date, deadline_date) VALUES (?, ?, ?, ?, ?)`,
                     [task.title, task.isDone ? '1' : '0', task.additionDate.toISOString(), task.beginDate?.toISOString() ?? null, task.deadlineDate?.toISOString() ?? null],
-                    (_, result) => { resolve(result.insertId!); },
+                    (_, result) => resolve(result.insertId!),
                     (_, error) => { reject(error); return false; }
                 );
             });

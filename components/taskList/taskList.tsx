@@ -25,8 +25,8 @@ export default function TaskList({ navigation, route }: Props) {
     return (
         <SafeAreaView style={[tasks.length === 0 ? baseStyles.alertContainer : baseStyles.container, { marginRight: 0 }]}>
             {tasks.length === 0
-                ? <Text style={baseStyles.headerL}>You have no tasks</Text>
-                : <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item}></TaskItem>)} />}
+                ? <Text style={baseStyles.headerM}>You have no tasks</Text>
+                : <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item} />)} />}
             <TouchableOpacity style={baseStyles.addButton}
                 onPress={() => navigation.navigate('Create task')}>
                 <AddIcon height={60} width={60} color={colors.primaryColor} />

@@ -28,13 +28,13 @@ export default function TaskDetails({ navigation, route }: Props) {
     if (task === undefined)
         return (
             <SafeAreaView style={baseStyles.alertContainer}>
-                <Text style={baseStyles.headerL}>Loading...</Text>
+                <Text style={baseStyles.headerM}>Loading...</Text>
             </SafeAreaView>
         );
     if (task === null)
         return (
             <SafeAreaView style={baseStyles.alertContainer}>
-                <Text style={baseStyles.headerL}>Failed to find the task</Text>
+                <Text style={baseStyles.headerM}>Failed to find the task</Text>
             </SafeAreaView>
         );
     return (
@@ -67,21 +67,21 @@ export default function TaskDetails({ navigation, route }: Props) {
                 </TouchableOpacity>
             </View>
             <View style={styles.dateContainer}>
-                <Text style={baseStyles.hintM}>Created at: </Text>
-                <Text style={baseStyles.headerM}>{task.additionDate.toLocaleString()}</Text>
+                <Text style={baseStyles.hintS}>Created at: </Text>
+                <Text style={baseStyles.headerS}>{task.additionDate.toLocaleString()}</Text>
             </View>
             {
                 task.beginDate &&
                 <View style={styles.dateContainer}>
-                    <Text style={baseStyles.hintM}>Date of beginning: </Text>
-                    <Text style={baseStyles.headerM}>{task.beginDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
+                    <Text style={baseStyles.hintS}>Date of beginning: </Text>
+                    <Text style={baseStyles.headerS}>{task.beginDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
                 </View>
             }
             {
                 task.deadlineDate &&
                 <View style={styles.dateContainer}>
-                    <Text style={baseStyles.hintM}>Deadline date: </Text>
-                    <Text style={baseStyles.headerM}>{task.deadlineDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
+                    <Text style={baseStyles.hintS}>Deadline date: </Text>
+                    <Text style={baseStyles.headerS}>{task.deadlineDate.toLocaleString('de', { dateStyle: 'medium', timeStyle: 'short' })}</Text>
                 </View>
             }
             <FlatList data={task.stages} renderItem={({ item }) => (<StageItem stage={item} />)} />

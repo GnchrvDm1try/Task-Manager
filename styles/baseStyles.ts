@@ -18,16 +18,21 @@ export const baseStyles = StyleSheet.create({
     },
     headerL: {
         textAlign: 'center',
+        fontSize: 30,
+        fontWeight: '500'
+    },
+    headerM: {
+        textAlign: 'center',
         fontSize: 25,
         fontWeight: '600'
     },
-    headerM: {
+    headerS: {
         textAlign: 'center',
         fontSize: 20,
         fontWeight: '600',
         paddingVertical: 5
     },
-    hintM: {
+    hintS: {
         fontSize: 20,
         color: colors.borderColor
     },
