@@ -1,10 +1,12 @@
-import { Text, View, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { Text, View, TouchableOpacity, Modal } from 'react-native';
 import Stage from '../../models/Stage';
 import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
 import UnCheckedMarkIcon from '../../assets/icons/unchecked_mark_icon.svg';
 import Ellipsis from '../../assets/icons/ellipsis_icon.svg';
 import { styles } from './stageItem.styles';
 import { baseStyles } from '../../styles/baseStyles';
+import { modalWindowStyles } from '../../styles/modalWindowStyles';
 import colors from '../../styles/colors.json';
 
 type Props = {
@@ -12,24 +14,52 @@ type Props = {
 }
 
 export default function StageItem({ stage }: Props) {
+    const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
+
+    const ContextMenu = () => {
+        return (
+            <Modal
+                transparent
+                visible={isContextMenuVisible}
+                animationType='none'
+                onRequestClose={() => { }}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => setIsContextMenuVisible(false)}
+                    style={modalWindowStyles.backgroundCloseOpacity}>
+                    <View style={modalWindowStyles.modalContainer}>
+                        <TouchableOpacity style={modalWindowStyles.button}>
+                            <Text style={baseStyles.headerM}>Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={modalWindowStyles.buttonLast}>
+                            <Text style={baseStyles.headerM}>Delete</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+        );
+    }
+
     return (
         <View>
+            {ContextMenu()}
             <View style={styles.headerContainer}>
                 <Text style={[baseStyles.headerL, { width: '93%' }, stage.isDone ? { color: colors.borderColor } : {}]}>
+                    <TouchableOpacity
+                        onPress={() => { }}>
+                        {
+                            stage.isDone &&
+                            <UnCheckedMarkIcon height={30} width={30} color={colors.borderColor} style={{ marginRight: 10 }} />
+                        }
+                        {
+                            !stage.isDone &&
+                            <CheckedMarkIcon height={30} width={30} style={{ marginRight: 10 }} />
+                        }
+                    </TouchableOpacity>
+                    {stage.title}
+                </Text>
                 <TouchableOpacity
-                    onPress={() => { }}>
-                    {
-                        stage.isDone &&
-                        <UnCheckedMarkIcon height={30} width={30} color={colors.borderColor} style={{ marginRight: 10 }} />
-                    }
-                    {
-                        !stage.isDone &&
-                        <CheckedMarkIcon height={30} width={30} style={{ marginRight: 10 }} />
-                    }
-                </TouchableOpacity>
-                {stage.title}
-            </Text>
-                <TouchableOpacity>
+                    onPress={() => setIsContextMenuVisible(true)}>
                     <Ellipsis height={30} width={8} style={{ padding: 15 }} />
                 </TouchableOpacity>
             </View>
