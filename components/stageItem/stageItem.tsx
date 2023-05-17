@@ -2,6 +2,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import Stage from '../../models/Stage';
 import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
 import UnCheckedMarkIcon from '../../assets/icons/unchecked_mark_icon.svg';
+import Ellipsis from '../../assets/icons/ellipsis_icon.svg';
 import { styles } from './stageItem.styles';
 import { baseStyles } from '../../styles/baseStyles';
 import colors from '../../styles/colors.json';
@@ -13,7 +14,8 @@ type Props = {
 export default function StageItem({ stage }: Props) {
     return (
         <View>
-            <Text style={[baseStyles.headerL, stage.isDone ? { color: colors.borderColor } : {}]}>
+            <View style={styles.headerContainer}>
+                <Text style={[baseStyles.headerL, { width: '93%' }, stage.isDone ? { color: colors.borderColor } : {}]}>
                 <TouchableOpacity
                     onPress={() => { }}>
                     {
@@ -27,6 +29,10 @@ export default function StageItem({ stage }: Props) {
                 </TouchableOpacity>
                 {stage.title}
             </Text>
+                <TouchableOpacity>
+                    <Ellipsis height={30} width={8} style={{ padding: 15 }} />
+                </TouchableOpacity>
+            </View>
             {
                 stage.deadlineDate &&
                 <Text style={[{ marginVertical: 4 }, stage.isDone ? { color: colors.borderColor } : {}]}>
