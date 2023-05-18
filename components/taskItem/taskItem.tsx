@@ -1,5 +1,7 @@
 import { Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 import Task from '../../models/Task';
 import { styles } from './taskItem.styles';
 import { baseStyles } from '../../styles/baseStyles';
@@ -9,7 +11,7 @@ type Props = {
 }
 
 export default function TaskItem({ task }: Props) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<TaskListStackParamList>>();
 
   return (
     <TouchableOpacity

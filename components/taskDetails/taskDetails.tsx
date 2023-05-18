@@ -42,16 +42,14 @@ export default function TaskDetails({ navigation, route }: Props) {
             <View style={baseStyles.horizontalContainer}>
                 <TouchableOpacity
                     onPress={() => {
-                        const newTask = { ...task, isDone: !task.isDone };
+                        const newTask: Task = { ...task, isDone: !task.isDone };
                         DBManager.getInstance().updateTask(newTask).then(() => setTask(newTask));
                     }}
                     style={baseStyles.mainButton}>
                     <Text style={baseStyles.buttonTextContent}>{task.isDone ? 'Mark as unfinished' : 'Mark as finished'}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('Edit task', { taskId: task.id });
-                    }}
+                    onPress={() => navigation.navigate('Edit task', { taskId: task.id })}
                     style={baseStyles.mainButton}>
                     <EditIcon style={styles.buttonIconContent} />
                 </TouchableOpacity>

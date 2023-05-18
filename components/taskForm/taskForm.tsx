@@ -17,7 +17,7 @@ export default function TaskForm(props: Props) {
     const INITIAL_DEADLINE_GAP_IN_MINUTES = 60;
     const isEditing = props.route.name === 'Edit task';
     
-    const [placeholderTask, setPlaceholderTask] = useState<Task | undefined>(undefined);
+    const [taskPlaceholder, setTaskPlaceholder] = useState<Task | undefined>(undefined);
     const [title, setTitle] = useState('');
     const [beginDate, setBeginDate] = useState(new Date());
     // Setting the initial value of the deadline date with the begin date's value plus a gap in minutes
@@ -30,7 +30,7 @@ export default function TaskForm(props: Props) {
             const editProps = props as NativeStackScreenProps<TaskListStackParamList, 'Edit task'>;
             DBManager.getInstance().getTaskWithStages(editProps.route.params.taskId).then((res) => {
                 if (res) {
-                    setPlaceholderTask(res);
+                    setTaskPlaceholder(res);
                     setTitle(res.title);
                     if (res.beginDate) {
                         setBeginDate(res.beginDate);
@@ -144,7 +144,7 @@ export default function TaskForm(props: Props) {
                             return;
                         }
                         const task: Task = new Task({
-                            ...placeholderTask ?? undefined,
+                            ...taskPlaceholder ?? undefined,
                             title: title,
                             beginDate: isBeginDateUsed ? beginDate : undefined,
                             deadlineDate: isDeadlineDateUsed ? deadlineDate : undefined
@@ -152,7 +152,7 @@ export default function TaskForm(props: Props) {
 
                         if (isEditing)
                             DBManager.getInstance().updateTask(task).then(() => {
-                                if (placeholderTask) {
+                                if (taskPlaceholder) {
                                     props.navigation.navigate('Task list', { update: true });
                                     props.navigation.navigate('Task info', { taskId: task!.id });
                                 }
