@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Stage from '../../models/Stage';
+import { DBManager } from '../../DBManager';
 import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
 import UnCheckedMarkIcon from '../../assets/icons/unchecked_mark_icon.svg';
 import Ellipsis from '../../assets/icons/ellipsis_icon.svg';
@@ -16,9 +17,10 @@ type Props = {
     stage: Stage;
 }
 
-export default function StageItem({ stage }: Props) {
+export default function StageItem(props: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<TaskListStackParamList>>();
 
+    const [stage, setStage] = useState(props.stage);
     const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
     const ContextMenu = () => {
@@ -56,7 +58,10 @@ export default function StageItem({ stage }: Props) {
             <View style={styles.headerContainer}>
                 <Text style={[baseStyles.headerL, { width: '93%' }, stage.isDone ? { color: colors.borderColor } : {}]}>
                     <TouchableOpacity
-                        onPress={() => { }}>
+                        onPress={() => {
+                            const newStage: Stage = { ...stage, isDone: !stage.isDone };
+                            DBManager.getInstance().updateStage(newStage).then(() => setStage(newStage));
+                        }}>
                         {
                             stage.isDone &&
                             <UnCheckedMarkIcon height={30} width={30} color={colors.borderColor} style={{ marginRight: 10 }} />
