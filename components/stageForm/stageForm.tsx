@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
@@ -10,14 +10,34 @@ import { baseStyles } from '../../styles/baseStyles';
 import { formStyles } from '../../styles/formStyles';
 import colors from '../../styles/colors.json';
 
-type Props = NativeStackScreenProps<TaskListStackParamList, 'Create stage'>;
+type Props = NativeStackScreenProps<TaskListStackParamList>;
 
 export default function StageForm(props: Props) {
+    const isEditing = props.route.name === 'Edit stage';
 
+    const [stagePlaceholder, setStagePlaceholder] = useState<Stage | undefined>(undefined);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [deadlineDate, setDeadlineDate] = useState(new Date());
     const [isDeadlineDateUsed, setIsDeadlineDateUsed] = useState(false);
+
+    useEffect(() => {
+        if (isEditing) {
+            const editProps = props as NativeStackScreenProps<TaskListStackParamList, 'Edit stage'>;
+            DBManager.getInstance().getStage(editProps.route.params.stageId).then((res) => {
+                if (res) {
+                    setStagePlaceholder(res);
+                    setTitle(res.title);
+                    if (res.description)
+                        setDescription(res.description);
+                    if (res.deadlineDate) {
+                        setDeadlineDate(res.deadlineDate);
+                        setIsDeadlineDateUsed(true);
+                    }
+                }
+            });
+        }
+    }, []);
 
     return (
         <ScrollView contentContainerStyle={formStyles.formContainer}>
@@ -76,19 +96,35 @@ export default function StageForm(props: Props) {
                             Alert.alert('The title has to be at least 1 character long');
                             return;
                         }
-                        const stage: Stage = new Stage({
-                            taskId: props.route.params.taskId,
-                            title: title,
-                            description: description.trim().length > 0 ? description.trim() : undefined,
-                            deadlineDate: isDeadlineDateUsed ? deadlineDate : undefined
-                        });
+                        if (isEditing) {
+                            const stage: Stage = new Stage({
+                                ...stagePlaceholder!,
+                                title: title,
+                                description: description.trim().length > 0 ? description.trim() : undefined,
+                                deadlineDate: isDeadlineDateUsed ? deadlineDate : undefined
+                            });
 
-                        DBManager.getInstance().createStage(stage).then(() => {
-                            props.navigation.navigate('Task list', { update: true });
-                            props.navigation.navigate('Task info', { taskId: stage.taskId });
-                        });
+                            DBManager.getInstance().updateStage(stage).then(() => {
+                                props.navigation.navigate('Task list', { update: true });
+                                props.navigation.navigate('Task info', { taskId: stage.taskId });
+                            })
+                        }
+                        else {
+                            const createProps = props as NativeStackScreenProps<TaskListStackParamList, 'Create stage'>
+                            const stage: Stage = new Stage({
+                                taskId: createProps.route.params.taskId,
+                                title: title,
+                                description: description.trim().length > 0 ? description.trim() : undefined,
+                                deadlineDate: isDeadlineDateUsed ? deadlineDate : undefined
+                            });
+
+                            DBManager.getInstance().createStage(stage).then(() => {
+                                props.navigation.navigate('Task list', { update: true });
+                                props.navigation.navigate('Task info', { taskId: stage.taskId });
+                            });
+                        }
                     }}>
-                    <Text style={baseStyles.buttonTextContent}>{'Create'}</Text>
+                    <Text style={baseStyles.buttonTextContent}>{isEditing ? 'Edit' : 'Create'}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={baseStyles.mainButton}
