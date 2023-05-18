@@ -164,6 +164,20 @@ export class DBManager {
         });
     }
 
+    public updateStage(stage: Stage): Promise<void> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `UPDATE Stages SET title = ?, is_done = ?, description = ?, deadline_date = ?
+                    WHERE id = ?`,
+                    [stage.title, stage.isDone ? '1' : '0', stage.description ?? null, stage.deadlineDate?.toISOString() ?? null, stage.id],
+                    (_, result) => { resolve(); },
+                    (_, error) => { reject(error); return false; }
+                );
+            });
+        });
+    }
+
     public deleteTask(id: number): Promise<any> {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
