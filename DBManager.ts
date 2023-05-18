@@ -150,6 +150,31 @@ export class DBManager {
         });
     }
 
+    public getStage(id: number): Promise<Stage | null> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `SELECT * FROM Stages WHERE id = ?`,
+                    [id],
+                    (_, { rows }) => {
+                        let currentRow = rows.item(0)
+                        if (currentRow)
+                            resolve(new Stage({
+                                id: currentRow.id,
+                                taskId: currentRow.task_id,
+                                title: currentRow.title,
+                                isDone: currentRow.is_done,
+                                description: currentRow.description,
+                                deadlineDate: currentRow.deadline_date ? new Date(currentRow.deadline_date) : undefined
+                            }));
+                        resolve(null);
+                    },
+                    (_, error) => { reject(error); return false; }
+                );
+            });
+        });
+    }
+
     public updateTask(task: Task): Promise<void> {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
