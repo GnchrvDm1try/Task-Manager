@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Text, View, TouchableOpacity, Modal } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Stage from '../../models/Stage';
 import CheckedMarkIcon from '../../assets/icons/checked_mark_icon.svg';
 import UnCheckedMarkIcon from '../../assets/icons/unchecked_mark_icon.svg';
@@ -8,12 +10,15 @@ import { styles } from './stageItem.styles';
 import { baseStyles } from '../../styles/baseStyles';
 import { modalWindowStyles } from '../../styles/modalWindowStyles';
 import colors from '../../styles/colors.json';
+import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 
 type Props = {
     stage: Stage;
 }
 
 export default function StageItem({ stage }: Props) {
+    const navigation = useNavigation<NativeStackNavigationProp<TaskListStackParamList>>();
+
     const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 
     const ContextMenu = () => {
@@ -28,7 +33,12 @@ export default function StageItem({ stage }: Props) {
                     onPress={() => setIsContextMenuVisible(false)}
                     style={modalWindowStyles.backgroundCloseOpacity}>
                     <View style={modalWindowStyles.modalContainer}>
-                        <TouchableOpacity style={modalWindowStyles.button}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setIsContextMenuVisible(false);
+                                navigation.navigate('Edit stage', { stageId: stage.id });
+                            }}
+                            style={modalWindowStyles.button}>
                             <Text style={baseStyles.headerM}>Edit</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={modalWindowStyles.buttonLast}>
