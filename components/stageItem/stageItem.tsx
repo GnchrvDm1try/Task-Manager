@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View, TouchableOpacity, Modal } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Stage from '../../models/Stage';
@@ -43,7 +43,20 @@ export default function StageItem(props: Props) {
                             style={modalWindowStyles.button}>
                             <Text style={baseStyles.headerM}>Edit</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={modalWindowStyles.buttonLast}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                Alert.alert('Deleting of the stage', 'Are you sure you want to permanently delete this stage?', [
+                                    {
+                                        text: 'Delete', onPress: () => DBManager.getInstance().deleteStage(stage.id).then(() => {
+                                            setIsContextMenuVisible(false);
+                                            navigation.navigate('Task list', { update: true });
+                                            navigation.navigate('Task info', { taskId: stage.taskId });
+                                        })
+                                    },
+                                    { text: 'Cancel', style: 'cancel' }
+                                ]);
+                            }}
+                            style={modalWindowStyles.buttonLast}>
                             <Text style={baseStyles.headerM}>Delete</Text>
                         </TouchableOpacity>
                     </View>
