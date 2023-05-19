@@ -105,7 +105,7 @@ export default function StageForm(props: Props) {
                             });
 
                             DBManager.getInstance().updateStage(stage).then(() => {
-                                props.navigation.navigate('Task list', { update: true });
+                                props.navigation.navigate('Task list', { refresh: true });
                                 props.navigation.navigate('Task info', { taskId: stage.taskId });
                             })
                         }
@@ -119,7 +119,7 @@ export default function StageForm(props: Props) {
                             });
 
                             DBManager.getInstance().createStage(stage).then(() => {
-                                props.navigation.navigate('Task list', { update: true });
+                                props.navigation.navigate('Task list', { refresh: true });
                                 props.navigation.navigate('Task info', { taskId: stage.taskId });
                             });
                         }

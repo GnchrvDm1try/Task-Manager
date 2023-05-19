@@ -153,13 +153,13 @@ export default function TaskForm(props: Props) {
                         if (isEditing)
                             DBManager.getInstance().updateTask(task).then(() => {
                                 if (taskPlaceholder) {
-                                    props.navigation.navigate('Task list', { update: true });
+                                    props.navigation.navigate('Task list', { refresh: true });
                                     props.navigation.navigate('Task info', { taskId: task!.id });
                                 }
                             });
                         else
                             DBManager.getInstance().createTask(task).then((res) => {
-                                props.navigation.navigate('Task list', { update: true });
+                                props.navigation.navigate('Task list', { refresh: true });
                                 props.navigation.navigate('Task info', { taskId: res });
                             });
                     }}>

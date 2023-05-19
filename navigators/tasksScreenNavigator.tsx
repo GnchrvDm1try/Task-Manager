@@ -6,7 +6,7 @@ import StageForm from '../components/stageForm/stageForm';
 import colors from '../styles/colors.json';
 
 export type TaskListStackParamList = {
-    'Task list': { update: boolean };
+    'Task list': { refresh: boolean };
     'Task info': { taskId: number };
     'Create task': undefined;
     'Edit task': { taskId: number };
@@ -27,7 +27,7 @@ export default function TasksScreen() {
                 <Stack.Screen
                     name='Task list'
                     component={TaskList}
-                    initialParams={{ update: true }}
+                    initialParams={{ refresh: true }}
                     options={{ headerShown: false }} />
                 <Stack.Screen
                     name='Task info'

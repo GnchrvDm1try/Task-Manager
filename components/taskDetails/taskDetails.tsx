@@ -56,7 +56,7 @@ export default function TaskDetails({ navigation, route }: Props) {
                 <TouchableOpacity
                     onPress={() => {
                         Alert.alert('Deleting of the task', 'Are you sure you want to permanently delete this task?', [
-                            { text: 'Delete', onPress: () => DBManager.getInstance().deleteTask(task.id).then(res => navigation.navigate('Task list', { update: true })) },
+                            { text: 'Delete', onPress: () => DBManager.getInstance().deleteTask(task.id).then(() => navigation.navigate('Task list', { refresh: true })) },
                             { text: 'Cancel', style: 'cancel' }
                         ]);
                     }}

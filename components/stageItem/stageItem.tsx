@@ -49,7 +49,7 @@ export default function StageItem(props: Props) {
                                     {
                                         text: 'Delete', onPress: () => DBManager.getInstance().deleteStage(stage.id).then(() => {
                                             setIsContextMenuVisible(false);
-                                            navigation.navigate('Task list', { update: true });
+                                            navigation.navigate('Task list', { refresh: true });
                                             navigation.navigate('Task info', { taskId: stage.taskId });
                                         })
                                     },

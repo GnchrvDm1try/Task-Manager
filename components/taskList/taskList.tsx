@@ -16,11 +16,11 @@ export default function TaskList({ navigation, route }: Props) {
     const [tasks, setTasks] = useState(new Array<Task>());
 
     useEffect(() => {
-        if (route.params.update) {
+        if (route.params.refresh) {
             DBManager.getInstance().getAllTasksWithStages().then((res) => setTasks(res));
-            navigation.setParams({ update: false });
+            navigation.setParams({ refresh: false });
         }
-    }, [route.params.update]);
+    }, [route.params.refresh]);
 
     return (
         <SafeAreaView style={[tasks.length === 0 ? baseStyles.alertContainer : baseStyles.container, { marginRight: 0 }]}>

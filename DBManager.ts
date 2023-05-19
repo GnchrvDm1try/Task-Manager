@@ -207,7 +207,7 @@ export class DBManager {
         return new Promise((resolve, reject) => {
             DBManager.db.transaction(tx => {
                 tx.executeSql(
-                    `DELETE FROM TASKS
+                    `DELETE FROM Tasks
                     WHERE id = ?`,
                     [id],
                     (_, result) => { resolve(result) },
