@@ -217,6 +217,20 @@ export class DBManager {
         });
     }
 
+    public deleteStage(id: number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            DBManager.db.transaction(tx => {
+                tx.executeSql(
+                    `DELETE FROM Stages
+                    WHERE id = ?`,
+                    [id],
+                    (_, result) => { resolve(result) },
+                    (_, error) => { reject(error); return false; }
+                );
+            });
+        });
+    }
+
     private static createTasksTableIfNotExists() {
         DBManager.db.transaction(tx => {
             tx.executeSql(`CREATE TABLE IF NOT EXISTS Tasks (
