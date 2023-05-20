@@ -5,6 +5,7 @@ import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigat
 import Task from '../../models/Task';
 import { styles } from './taskItem.styles';
 import { baseStyles } from '../../styles/baseStyles';
+import colors from '../../styles/colors.json';
 
 type Props = {
   task: Task;
@@ -37,7 +38,7 @@ export default function TaskItem({ task }: Props) {
         </View>
       </View>
       <Text style={styles.otherInfo}>Stages: {task.stages.length}</Text>
-      <Text numberOfLines={5} ellipsizeMode={'tail'} style={styles.title}>{task.title}</Text>
+      <Text numberOfLines={5} ellipsizeMode={'tail'} style={[styles.title, task.isDone && { color: colors.borderColor }]}>{task.title}</Text>
     </TouchableOpacity>
   );
 }
