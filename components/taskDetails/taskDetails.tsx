@@ -43,7 +43,11 @@ export default function TaskDetails({ navigation, route }: Props) {
                 <TouchableOpacity
                     onPress={() => {
                         const newTask: Task = { ...task, isDone: !task.isDone };
-                        DBManager.getInstance().updateTask(newTask).then(() => setTask(newTask));
+                        DBManager.getInstance().updateTask(newTask).then(() => {
+                            setTask(newTask);
+                            navigation.navigate('Task list', { refresh: true });
+                            navigation.navigate('Task info', { taskId: task.id });
+                        });
                     }}
                     style={baseStyles.mainButton}>
                     <Text style={baseStyles.buttonTextContent}>{task.isDone ? 'Mark as unfinished' : 'Mark as finished'}</Text>
