@@ -5,6 +5,7 @@ import { DBManager } from '../../DBManager';
 import Task from '../../models/Task';
 import TaskItem from '../taskItem/taskItem';
 import colors from '../../styles/colors.json';
+import { MarkedDates } from 'react-native-calendars/src/types';
 
 export default function Calendar() {
     const [selected, setSelected] = useState('');
@@ -14,6 +15,27 @@ export default function Calendar() {
     useEffect(() => {
         DBManager.getInstance().getAllTasksWithStages().then((res) => setTasks(res));
     }, []);
+
+    const getDots = () => {
+        let marked: MarkedDates = { [selected]: { selected: true, dots: [] } };
+
+        const addToMarked = (date: string, color: string) => {
+            if (!marked[date])
+                marked[date] = { dots: [] };
+            marked[date].dots!.push({ color: color });
+        }
+
+        for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            if (task.beginDate) {
+                addToMarked(task.beginDate.toISOString().split('T')[0], colors.primaryColor);
+            }
+            if (task.deadlineDate) {
+                addToMarked(task.deadlineDate.toISOString().split('T')[0], 'red');
+            }
+        }
+        return marked;
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -38,6 +60,7 @@ export default function Calendar() {
                             && (task.deadlineDate ? task.deadlineDate.getTime() >= date.getTime() : true);
                     }));
                 }}
+                markedDates={getDots()}
             />
             <FlatList data={displayedTasks} renderItem={({ item }) => (<TaskItem task={item} />)} style={{ marginLeft: 15 }} />
         </SafeAreaView>
