@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import TaskItem from '../taskItem/taskItem';
 import Task from '../../models/Task';
@@ -7,6 +7,7 @@ import { DBManager } from '../../DBManager';
 import AddIcon from '../../assets/icons/add_icon.svg';
 import { baseStyles } from '../../styles/baseStyles';
 import colors from '../../styles/colors.json';
+import TriangleIcon from '../../assets/icons/triangle_icon.svg';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { TaskListStackParamList } from '../../navigators/tasksScreenNavigator';
 
@@ -57,7 +58,35 @@ export default function TaskList({ navigation, route }: Props) {
         <SafeAreaView style={[tasks.length === 0 ? baseStyles.alertContainer : baseStyles.container, { marginRight: 0 }]}>
             {tasks.length === 0
                 ? <Text style={baseStyles.headerM}>You have no tasks</Text>
-                : <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item} />)} />}
+                : <View style={{ flex: 1 }}>
+                    <View style={[baseStyles.horizontalContainer, { marginRight: 15 }]}>
+                        <TouchableOpacity
+                            onPress={() => { setIsOrderReversed(lastOrder === 'additionDate' && !isOrderReversed); setLastOrder('additionDate'); }}
+                            style={baseStyles.mainButton}>
+                            <Text>Addition</Text>
+                            {lastOrder === 'additionDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setIsOrderReversed(lastOrder === 'isDone' && !isOrderReversed); setLastOrder('isDone'); }}
+                            style={baseStyles.mainButton}>
+                            <Text>Readiness</Text>
+                            {lastOrder === 'isDone' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setIsOrderReversed(lastOrder === 'beginDate' && !isOrderReversed); setLastOrder('beginDate'); }}
+                            style={baseStyles.mainButton}>
+                            <Text>Beginning</Text>
+                            {lastOrder === 'beginDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { setIsOrderReversed(lastOrder === 'deadlineDate' && !isOrderReversed); setLastOrder('deadlineDate'); }}
+                            style={baseStyles.mainButton}>
+                            <Text>Deadline</Text>
+                            {lastOrder === 'deadlineDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                        </TouchableOpacity>
+                    </View>
+                    <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item} />)} />
+                </View>}
             <TouchableOpacity style={baseStyles.addButton}
                 onPress={() => navigation.navigate('Create task')}>
                 <AddIcon height={60} width={60} color={colors.primaryColor} />
