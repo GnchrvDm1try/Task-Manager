@@ -14,6 +14,8 @@ type Props = NativeStackScreenProps<TaskListStackParamList, 'Task list'>;
 
 export default function TaskList({ navigation, route }: Props) {
     const [tasks, setTasks] = useState(new Array<Task>());
+    const [lastOrder, setLastOrder] = useState<keyof Task | undefined>(undefined);
+    const [isOrderReversed, setIsOrderReversed] = useState(false);
 
     useEffect(() => {
         if (route.params.refresh) {
@@ -21,6 +23,35 @@ export default function TaskList({ navigation, route }: Props) {
             navigation.setParams({ refresh: false });
         }
     }, [route.params.refresh]);
+
+    useEffect(() => {
+        if (lastOrder)
+            orderTasksByProperty()
+    }, [lastOrder, isOrderReversed])
+
+    function orderTasksByProperty() {
+        if (tasks.length === 0 || !lastOrder)
+            return;
+            
+        const reverseCoefficient = isOrderReversed ? -1 : 1;
+        const propertyValue = tasks[0][lastOrder];
+        let ordered = tasks;
+
+        if (propertyValue instanceof Date || typeof propertyValue === 'undefined')
+            ordered = tasks.sort((a, b) => {
+                if (!a[lastOrder])
+                    return 1;
+                if (!b[lastOrder])
+                    return -1;
+                return reverseCoefficient * ((a[lastOrder] as Date).getTime() - (b[lastOrder] as Date).getTime());
+            }).map(t => ({ ...t }));
+        else if (typeof propertyValue === 'boolean')
+            ordered = tasks.sort((a, b) => reverseCoefficient * ((a[lastOrder] as Boolean ? 1 : 0) - (b[lastOrder] as Boolean ? 1 : 0))).map(t => ({ ...t }));
+        else if (typeof propertyValue === 'number')
+            ordered = tasks.sort((a, b) => reverseCoefficient * ((a[lastOrder] as number) - (b[lastOrder] as number))).map(t => ({ ...t }));
+
+        setTasks(ordered);
+    }
 
     return (
         <SafeAreaView style={[tasks.length === 0 ? baseStyles.alertContainer : baseStyles.container, { marginRight: 0 }]}>
