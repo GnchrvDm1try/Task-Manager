@@ -15,7 +15,7 @@ type Props = NativeStackScreenProps<TaskListStackParamList, 'Task list'>;
 
 export default function TaskList({ navigation, route }: Props) {
     const [tasks, setTasks] = useState(new Array<Task>());
-    const [lastOrder, setLastOrder] = useState<keyof Task | undefined>(undefined);
+    const [orderProperty, setLastOrder] = useState<keyof Task | undefined>(undefined);
     const [isOrderReversed, setIsOrderReversed] = useState(false);
 
     useEffect(() => {
@@ -26,12 +26,12 @@ export default function TaskList({ navigation, route }: Props) {
     }, [route.params.refresh]);
 
     useEffect(() => {
-        if (lastOrder)
+        if (orderProperty)
             orderTasksByProperty()
-    }, [lastOrder, isOrderReversed])
+    }, [orderProperty, isOrderReversed])
 
     function orderTasksByProperty() {
-        if (tasks.length === 0 || !lastOrder)
+        if (tasks.length === 0 || !orderProperty)
             return;
 
         const reverseCoefficient = isOrderReversed ? -1 : 1;
@@ -40,25 +40,25 @@ export default function TaskList({ navigation, route }: Props) {
 
         if (propertyValue instanceof Date)
             ordered = tasks.sort((a, b) => {
-                if (!a[lastOrder])
+                if (!a[orderProperty])
                     return 1;
-                if (!b[lastOrder])
+                if (!b[orderProperty])
                     return -1;
-                return reverseCoefficient * ((a[lastOrder] as Date).getTime() - (b[lastOrder] as Date).getTime());
+                return reverseCoefficient * ((a[orderProperty] as Date).getTime() - (b[orderProperty] as Date).getTime());
             }).map(t => ({ ...t }));
         else if (typeof propertyValue === 'boolean')
-            ordered = tasks.sort((a, b) => reverseCoefficient * ((a[lastOrder] as Boolean ? 1 : 0) - (b[lastOrder] as Boolean ? 1 : 0))).map(t => ({ ...t }));
+            ordered = tasks.sort((a, b) => reverseCoefficient * ((a[orderProperty] as Boolean ? 1 : 0) - (b[orderProperty] as Boolean ? 1 : 0))).map(t => ({ ...t }));
         else if (typeof propertyValue === 'number')
-            ordered = tasks.sort((a, b) => reverseCoefficient * ((a[lastOrder] as number) - (b[lastOrder] as number))).map(t => ({ ...t }));
+            ordered = tasks.sort((a, b) => reverseCoefficient * ((a[orderProperty] as number) - (b[orderProperty] as number))).map(t => ({ ...t }));
 
         setTasks(ordered);
     }
 
     function findDefinedPropValue(): Task[keyof Task] {
         for (let i = 0; i < tasks.length; i++)
-            if (tasks[i][lastOrder!])
-                return tasks[i][lastOrder!];
-        return tasks[0][lastOrder!];
+            if (tasks[i][orderProperty!])
+                return tasks[i][orderProperty!];
+        return tasks[0][orderProperty!];
     }
 
     return (
@@ -68,28 +68,28 @@ export default function TaskList({ navigation, route }: Props) {
                 : <View style={{ flex: 1 }}>
                     <View style={[baseStyles.horizontalContainer, { marginRight: 15 }]}>
                         <TouchableOpacity
-                            onPress={() => { setIsOrderReversed(lastOrder === 'additionDate' && !isOrderReversed); setLastOrder('additionDate'); }}
+                            onPress={() => { setIsOrderReversed(orderProperty === 'additionDate' && !isOrderReversed); setLastOrder('additionDate'); }}
                             style={baseStyles.mainButton}>
                             <Text>Addition</Text>
-                            {lastOrder === 'additionDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                            {orderProperty === 'additionDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => { setIsOrderReversed(lastOrder === 'isDone' && !isOrderReversed); setLastOrder('isDone'); }}
+                            onPress={() => { setIsOrderReversed(orderProperty === 'isDone' && !isOrderReversed); setLastOrder('isDone'); }}
                             style={baseStyles.mainButton}>
                             <Text>Readiness</Text>
-                            {lastOrder === 'isDone' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                            {orderProperty === 'isDone' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => { setIsOrderReversed(lastOrder === 'beginDate' && !isOrderReversed); setLastOrder('beginDate'); }}
+                            onPress={() => { setIsOrderReversed(orderProperty === 'beginDate' && !isOrderReversed); setLastOrder('beginDate'); }}
                             style={baseStyles.mainButton}>
                             <Text>Beginning</Text>
-                            {lastOrder === 'beginDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                            {orderProperty === 'beginDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => { setIsOrderReversed(lastOrder === 'deadlineDate' && !isOrderReversed); setLastOrder('deadlineDate'); }}
+                            onPress={() => { setIsOrderReversed(orderProperty === 'deadlineDate' && !isOrderReversed); setLastOrder('deadlineDate'); }}
                             style={baseStyles.mainButton}>
                             <Text>Deadline</Text>
-                            {lastOrder === 'deadlineDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
+                            {orderProperty === 'deadlineDate' && <TriangleIcon height={10} width={10} style={!isOrderReversed && { transform: [{ rotate: '180deg' }] }} />}
                         </TouchableOpacity>
                     </View>
                     <FlatList data={tasks} renderItem={({ item }) => (<TaskItem task={item} />)} />
