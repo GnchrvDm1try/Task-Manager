@@ -33,12 +33,12 @@ export default function TaskList({ navigation, route }: Props) {
     function orderTasksByProperty() {
         if (tasks.length === 0 || !lastOrder)
             return;
-            
+
         const reverseCoefficient = isOrderReversed ? -1 : 1;
-        const propertyValue = tasks[0][lastOrder];
+        const propertyValue = findDefinedPropValue();
         let ordered = tasks;
 
-        if (propertyValue instanceof Date || typeof propertyValue === 'undefined')
+        if (propertyValue instanceof Date)
             ordered = tasks.sort((a, b) => {
                 if (!a[lastOrder])
                     return 1;
@@ -52,6 +52,13 @@ export default function TaskList({ navigation, route }: Props) {
             ordered = tasks.sort((a, b) => reverseCoefficient * ((a[lastOrder] as number) - (b[lastOrder] as number))).map(t => ({ ...t }));
 
         setTasks(ordered);
+    }
+
+    function findDefinedPropValue(): Task[keyof Task] {
+        for (let i = 0; i < tasks.length; i++)
+            if (tasks[i][lastOrder!])
+                return tasks[i][lastOrder!];
+        return tasks[0][lastOrder!];
     }
 
     return (
