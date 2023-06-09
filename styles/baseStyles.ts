@@ -39,6 +39,7 @@ export const baseStyles = StyleSheet.create({
     mainButton: {
         height: 45,
         justifyContent: 'center',
+        alignItems: 'center',
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderWidth: 1,
